@@ -14,7 +14,9 @@ const todoSchema = new mongoose.Schema({
         default: false,
     },
     owner: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
     }
 });
 

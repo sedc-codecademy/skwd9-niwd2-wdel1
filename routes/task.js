@@ -1,26 +1,25 @@
 const express = require('express');
 const router = new express.Router();
 const Todo = require('../models/todo');
-const todos = [
-    {
-        id: 1,
-        text: 'Go to the store'
-    },
-    {
-        id: 2,
-        text: 'Buy some milk',
-    }
-]
+const auth = require('../middleware/auth');
 
-router.get('/todos', async (req, res) => {
-    const allTodos = await Todo.find({});
-    res.status(200).send(allTodos);
+router.get('/todos', auth, async (req, res) => {
+    try {
+        await req.user.populate({
+            path: 'todos'
+        });
+
+        res.send(req.user.todos);
+    } catch (e) {
+        console.log(e)
+        res.status(500).send(e);
+    }
 });
 
-router.get('/todos/:id', async (req, res) => {
+router.get('/todos/:id', auth, async (req, res) => {
     const _id = req.params.id;
     try {
-        const todo = await Todo.findOne({ _id });
+        const todo = await Todo.findOne({ _id, owner: req.user._id });
         if (!todo) {
             return res.status(404).send();            
         }
@@ -31,8 +30,11 @@ router.get('/todos/:id', async (req, res) => {
     }
 });
 
-router.post('/todos', async (req, res) => {
-    const todo = new Todo(req.body);
+router.post('/todos', auth, async (req, res) => {
+    const todo = new Todo({
+        ...req.body,
+        owner: req.user._id,
+    });
     try {
         await todo.save();
         res.status(201).send(todo);
@@ -41,7 +43,7 @@ router.post('/todos', async (req, res) => {
     }
 });
 
-router.patch('/todos/:id', async (req, res) => {
+router.patch('/todos/:id', auth, async (req, res) => {
     const _id = req.params.id;
     const updates = Object.keys(req.body);
     const allowedUpdates = ['name', 'description', 'completed'];
@@ -50,7 +52,7 @@ router.patch('/todos/:id', async (req, res) => {
         return res.status(403).send({ error: 'Invalid updates.' });
     }
     
-    const todo = await Todo.findOne({ _id })
+    const todo = await Todo.findOne({ _id, owner: req.user._id })
 
     updates.forEach((update) => todo[update] = req.body[update]) // todo['name'] todo.name
 
@@ -62,10 +64,10 @@ router.patch('/todos/:id', async (req, res) => {
     }
 });
 
-router.delete('/todos/:id', async (req, res) => {
+router.delete('/todos/:id', auth, async (req, res) => {
     const _id = req.params.id;
     try {
-        const todo = await Todo.findOneAndDelete({ _id });
+        const todo = await Todo.findOneAndDelete({ _id, owner: req.user._id });
 
         if (!todo) {
             return res.status(404).send({ error: 'Todo not found!' });
