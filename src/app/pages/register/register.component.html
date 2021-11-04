@@ -1,0 +1,177 @@
+<!--<div class="row">-->
+<!--  <div class="col-12">-->
+<!--    <form #f="ngForm" (ngSubmit)="onSubmit(f)">-->
+<!--      <div class="row">-->
+<!--        <div class="col-6 form-group">-->
+<!--          <label for="name">Name</label>-->
+<!--          <input-->
+<!--            type="text"-->
+<!--            id="name"-->
+<!--            class="form-control"-->
+<!--            name="name"-->
+<!--            required-->
+<!--            #userName="ngModel"-->
+<!--            ngModel>-->
+<!--          <div-->
+<!--            *ngIf="userName.errors && (userName.dirty || userName.touched)"-->
+<!--            class="text-danger">-->
+<!--            Name is required!-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="col-6 form-group">-->
+<!--          <label for="email">Email</label>-->
+<!--          <input-->
+<!--            type="email"-->
+<!--            id="email"-->
+<!--            class="form-control"-->
+<!--            name="email"-->
+<!--            #email="ngModel"-->
+<!--            required-->
+<!--            ngModel>-->
+<!--          <div-->
+<!--            *ngIf="email.errors && (email.dirty || email.touched)"-->
+<!--            class="text-danger">-->
+<!--            Email is required!-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="col-6 form-group">-->
+<!--          <label for="password">Password</label>-->
+<!--          <input-->
+<!--            type="password"-->
+<!--            id="password"-->
+<!--            class="form-control"-->
+<!--            name="password"-->
+<!--            #password="ngModel"-->
+<!--            required-->
+<!--            ngModel>-->
+<!--          <div-->
+<!--            *ngIf="password.errors && (password.dirty || password.touched)"-->
+<!--            class="text-danger">-->
+<!--            Password is required!-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="col-6 form-group">-->
+<!--          <label for="age">Age</label>-->
+<!--          <input-->
+<!--            type="text"-->
+<!--            id="age"-->
+<!--            class="form-control"-->
+<!--            name="age"-->
+<!--            required-->
+<!--            #age="ngModel"-->
+<!--            ngModel-->
+<!--          >-->
+<!--          <div-->
+<!--            *ngIf="age.errors && (age.dirty || age.touched)"-->
+<!--            class="text-danger">-->
+<!--            Age is required!-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="row">-->
+<!--        <div class="col-6 mt-2">-->
+<!--          <button-->
+<!--            [disabled]="!f.valid"-->
+<!--            type="submit"-->
+<!--            class="btn btn-success">-->
+<!--            Register-->
+<!--          </button>-->
+<!--        </div>-->
+<!--        <div class="col-6 mt-2">-->
+<!--          <button-->
+<!--            (click)="onClear()"-->
+<!--            class="ml-2 btn btn-danger">-->
+<!--            Clear-->
+<!--          </button>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </form>-->
+<!--  </div>-->
+<!--</div>-->
+
+<div class="row">
+  <div class="col-12">
+    <form [formGroup]="userRegisterForm!" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="name">Name</label>
+          <input
+            type="text"
+            id="name"
+            class="form-control"
+            formControlName="name">
+          <div
+            *ngIf="!userRegisterForm?.get('name')!.valid && userRegisterForm?.get('name')!.touched"
+            class="text-danger">
+            Name is required!
+          </div>
+        </div>
+        <div class="col-6 form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            class="form-control"
+            formControlName="email">
+          <div
+            *ngIf="!userRegisterForm?.get('email')!.valid && userRegisterForm?.get('email')!.touched"
+            class="text-danger">
+            Email is required!
+          </div>
+        </div>
+        <div class="col-6 form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            class="form-control"
+            formControlName="password">
+          <div
+            *ngIf="!userRegisterForm?.get('password')!.valid && userRegisterForm?.get('password')!.touched"
+            class="text-danger">
+            Password is required!
+          </div>
+        </div>
+        <div class="col-6 form-group">
+          <label for="age">Age</label>
+          <input
+            type="number"
+            id="age"
+            class="form-control"
+            formControlName="age"
+          >
+          <div
+            *ngIf="!userRegisterForm?.get('age')!.valid && userRegisterForm?.get('age')!.touched"
+            class="text-danger">
+            Age is required!
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 mt-2">
+          <button
+            [disabled]="!userRegisterForm?.valid"
+            type="submit"
+            class="btn btn-success">
+            Register
+          </button>
+        </div>
+        <div class="col-6 mt-2">
+          <button
+            (click)="onClear()"
+            class="ml-2 btn btn-danger">
+            Clear
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="userRegisterError">
+  Something went wrong with registering.
+</div>
+
+<div *ngIf="user">
+  {{ user | json }}
+</div>
