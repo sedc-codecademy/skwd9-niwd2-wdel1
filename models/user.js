@@ -84,10 +84,13 @@ userSchema.statics.findByCredentials = async (email, password) => {
         throw new Error('Not registered or unable to log in');
     }
 
+    const hashed = await bcrypt.hash(password, 8);
+    // console.log(password, hashed, user.password);
+
     const isMatching = await bcrypt.compare(password, user.password);
 
     if (!isMatching) {
-        throw new Error('Unable to log in');
+        throw new Error('Password in incorrect');
     }
 
     return user;
@@ -95,9 +98,9 @@ userSchema.statics.findByCredentials = async (email, password) => {
 
 userSchema.pre('save', async function (next) {
     const user = this;
-
-    user.password = await bcrypt.hash(user.password, 8)
-
+    if (user.isModified('password') || user.isNew) {
+        user.password = await bcrypt.hash(user.password, 8)
+    }
     next();
 });
 

@@ -7,7 +7,6 @@ const { sendWelcomeEmail } = require('../email/user');
 router.post('/users', async (req, res) => {
     const user = new User(req.body);
     try {
-        // await user.save();
         const token = await user.generateAuthToken();
         sendWelcomeEmail(user.email, user.name);
         res.status(201).send({ user, token });
@@ -32,7 +31,11 @@ router.post('/users/login', async (req, res) => {
         const token = await user.generateAuthToken();
         res.status(200).send({ user, token });
     } catch (e) {
-        res.status(400).send({ error: 'Could not log in' });
+        console.log(e);
+        res.status(400).send({ 
+            message: 'Could not log in',
+            error: e,
+        });
     }
 });
 
