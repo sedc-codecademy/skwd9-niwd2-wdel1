@@ -3,6 +3,8 @@ const router = express.Router();
 const User = require('../models/user');
 const auth = require('../middleware/auth');
 const { sendWelcomeEmail } = require('../email/user');
+const multer = require('multer');
+const sharp = require('sharp');
 
 router.post('/users', async (req, res) => {
     const user = new User(req.body);
@@ -11,7 +13,10 @@ router.post('/users', async (req, res) => {
         sendWelcomeEmail(user.email, user.name);
         res.status(201).send({ user, token });
     } catch (e) {
-        res.status(400).send(e);
+        res.status(400).send({
+            message: 'Could not register',
+            error: e,
+        });
     }
 });
 
@@ -73,6 +78,40 @@ router.patch('/users/me', auth, async (req, res) => {
     } catch (e) {
         res.status(400).send(e);
     }
+});
+
+const upload = multer({
+    limits: {
+        fileSize: 10000000
+    },
+    fileFilter(req, file, cb) {
+        if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+            return cb(new Error('Please upload an image.'));
+        }
+        cb(undefined, true)
+    }
+})
+
+router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) => {
+    try {
+        const buffer = await sharp(req.file.buffer)
+        .resize({ width: 250, height: 250 })
+        .png()
+        .toBuffer();
+        
+        let newBuffer = new Buffer(buffer).toString('base64');
+
+        req.user.avatar = buffer;
+        await req.user.save();
+    
+        res.status(201).send({
+            buffer: newBuffer,
+        });
+    
+    } catch (e) {
+        res.status(400).send({ error: e.message });
+    }
+
 });
 
 module.exports = router;

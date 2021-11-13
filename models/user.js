@@ -47,7 +47,10 @@ const userSchema = new mongoose.Schema({
                 required: false,
             }
         }
-    ]
+    ],
+    avatar: {
+        type: Buffer
+    }
 });
 
 userSchema.virtual('todos', {
