@@ -1,0 +1,79 @@
+<!--<div *ngIf="allTodos">-->
+<!--  <div *ngIf="allTodos!.length > 0; else emptyTodosTemplate">-->
+<!--    <div class="d-flex justify-content-around mt-5">-->
+<!--      <div *ngFor="let todo of allTodos">-->
+<!--        <div class="card" style="width: 18rem;">-->
+<!--          <div class="card-body">-->
+<!--            <h5 class="card-title">{{ todo.name }}</h5>-->
+<!--            <p class="card-text">{{ todo.description }}</p>-->
+<!--            <a href="#" class="btn btn-primary">Go somewhere</a>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!--<ng-template #emptyTodosTemplate>-->
+<!--  <div>-->
+<!--    You have no Todos to do.-->
+<!--  </div>-->
+<!--</ng-template>-->
+
+<div *ngIf="activeTodos && completedTodos; else loadingTemplate">
+  <div class="row d-flex justify-content-between">
+    <div class="col-6">
+      <h2>Active Todos</h2>
+      <ul
+        class="list-group"
+        *ngIf="activeTodos.length > 0; else emptyActiveTodos">
+        <li
+          class="list-group-item py-3"
+          *ngFor="let todo of activeTodos">
+          <mat-checkbox
+            (change)="onComplete(todo)">
+            <span class="fw-bold mr-1">{{ todo.name }}</span>
+            <span class="font-monospace">({{ todo.description }})</span>
+          </mat-checkbox>
+        </li>
+      </ul>
+    </div>
+    <div class="col-6">
+      <h2>Completed Todos</h2>
+      <ul
+        class="list-group"
+        *ngIf="completedTodos.length > 0; else emptyCompletedTodos">
+        <li
+          *ngFor="let todo of completedTodos"
+          class="list-group-item py-3">
+          <del>
+            <span class="fw-bold mr-1">{{ todo.name }}</span>
+            <span class="font-monospace">({{ todo.description }})</span>
+          </del>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #loadingTemplate>
+  <app-skeleton-loader></app-skeleton-loader>
+</ng-template>
+
+<ng-template #emptyActiveTodos>
+  You have completed all your todos!
+  <div class="mt-3">
+    <button
+      mat-raised-button
+      color="primary"
+      [routerLink]="['/create']">
+      Create more?
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #emptyCompletedTodos>
+  You have not completed a single todo!
+  You lazy.
+</ng-template>

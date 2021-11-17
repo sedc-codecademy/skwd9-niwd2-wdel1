@@ -1,17 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { EMPTY, Observable } from 'rxjs';
-import { ILoginUserRequest, IRegisterUserRequest, IUser, IUserMetadataResponse } from "../constants/types";
+import { BehaviorSubject, EMPTY, Observable, ReplaySubject, Subject } from 'rxjs';
+import { ILoginUserRequest, IPatchUser, IRegisterUserRequest, IUser, IUserMetadataResponse } from "../constants/types";
 import { catchError } from "rxjs/operators";
+import { NotifierService } from "angular-notifier";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private SERVER_URL: string = environment.serverUrl;
-
-  constructor(private http: HttpClient) { }
+  public user$: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
+  constructor(private http: HttpClient, private notifier: NotifierService) { }
 
   public getAllUsers(): Observable<any> {
     return this.http.get(`${this.SERVER_URL}/users`);
@@ -30,6 +31,15 @@ export class AuthService {
   }
 
   public logoutUser(): Observable<any> {
+    this.notifier.notify('info', 'Logging out...');
     return this.http.post(`${this.SERVER_URL}/users/logout`, {});
+  }
+
+  public updateUser(body: IPatchUser) {
+    return this.http.patch(`${this.SERVER_URL}/users/me`, body);
+  }
+
+  public addAvatar(formData: FormData) {
+    return this.http.post(`${this.SERVER_URL}/users/me/avatar`, formData)
   }
 }

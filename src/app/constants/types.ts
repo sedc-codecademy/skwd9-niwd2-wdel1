@@ -1,3 +1,5 @@
+import { SafeResourceUrl } from "@angular/platform-browser";
+
 export interface IRegisterUserRequest {
   name: string;
   email: string;
@@ -21,4 +23,24 @@ export interface IUser {
   name: string;
   '__v': number;
   '_id': string;
+  avatar?: SafeResourceUrl | string;
+}
+
+export interface IPatchUser {
+  name?: string;
+  email?: string;
+  password?: string;
+}
+
+export interface ITodo {
+  _id: string;
+  name: string;
+  description: string;
+  completed: boolean;
+  owner: string;
+}
+
+export interface ICreateTodo {
+  name: string;
+  description: string;
 }

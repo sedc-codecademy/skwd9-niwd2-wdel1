@@ -1,9 +1,117 @@
-<div *ngIf="user">
-  Hello, {{ user.name }}
-  Your email is {{ user.email }}
-  Your age is {{ user.age }}
+<div *ngIf="user$ | async as user">
+  <div class="d-flex align-items-center mb-3">
+    <div class="h3">
+      Hello, {{ user.name }}
+      <img
+        *ngIf="!user.avatar"
+        [src]="'https://avatars.dicebear.com/api/adventurer/' + user.name + '.svg'" alt="">
+    </div>
+  </div>
 
-  <button
-    (click)="onLogout()"
-    class="btn btn-danger">Logout</button>
+  <div class="row mb-3">
+    <div class="col-6">
+      You are logged in as {{ user.email }}
+    </div>
+  </div>
+
+  <div
+    *ngIf="user.avatar" class="row mb-3">
+    <div class="col-6">
+      <img [src]="user.avatar" alt="">
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-3 form-group">
+      <input
+        (change)="fileChange($event)"
+        class="form-control"
+        type="file"
+      >
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-3 form-group">
+      <button
+        mat-raised-button
+        (click)="onUpload()"
+      >
+        <mat-icon>file_upload</mat-icon>
+        <span class="ml-1">Upload Avatar</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-3">
+      <button
+        (click)="toggleShow()"
+        mat-raised-button>
+        <mat-icon>edit</mat-icon>
+        Edit User
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="shouldShowForm" class="row">
+    <div class="col-12">
+      <form [formGroup]="updateUserForm!" (ngSubmit)="onSubmit()">
+        <div class="col-4 form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input
+              type="email"
+              formControlName="email"
+              placeholder=""
+              matInput>
+            <mat-icon matSuffix>email</mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="col-6 form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>Name</mat-label>
+            <input
+              type="text"
+              formControlName="name"
+              placeholder=""
+              matInput>
+            <mat-icon matSuffix>badge</mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="col-4 form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input
+              type="password"
+              formControlName="password"
+              placeholder=""
+              matInput>
+            <mat-icon matSuffix>lock</mat-icon>
+          </mat-form-field>
+        </div>
+        <button
+          mat-raised-button
+          color="primary"
+          class="mb-1"
+          type="submit"
+        >
+          <mat-icon>sync_alt</mat-icon>
+          Update
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-3">
+      <button
+        mat-raised-button
+        (click)="onLogout()"
+        color="warn">
+        <mat-icon>logout</mat-icon>
+        Logout
+      </button>
+    </div>
+  </div>
 </div>

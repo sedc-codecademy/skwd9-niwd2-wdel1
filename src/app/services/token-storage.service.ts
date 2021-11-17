@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IUser } from "../constants/types";
+import { AuthService } from "./auth.service";
 
 const TOKEN_KEY = 'auth-token';
 const USER_KEY = 'auth-user';
@@ -8,8 +9,8 @@ const USER_KEY = 'auth-user';
   providedIn: 'root'
 })
 export class TokenStorageService {
-
-  constructor() { }
+  public readonly user$ = this.authService.user$;
+  constructor(private readonly authService: AuthService) { }
 
   public saveToken(token: string): void {
     localStorage.removeItem(TOKEN_KEY);
@@ -34,6 +35,7 @@ export class TokenStorageService {
   }
 
   public logout(): void {
+    this.user$.next(undefined);
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
   }
